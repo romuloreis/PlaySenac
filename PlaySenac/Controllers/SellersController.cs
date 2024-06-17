@@ -64,6 +64,69 @@ namespace PlaySenac.Controllers
             return View(seller);
         }
 
+        public IActionResult Edit(int id)
+        {
+            //Verificar se existe um vendedor com o id passado por parâmetro
+            Seller seller = _context.Seller.FirstOrDefault(s => s.Id == id);
 
+            if (seller == null)
+            {
+                return NotFound();
+            }
+
+            //Criar uma lista de departamentos
+            List<Department> departments = _context.Department.ToList();
+
+            //Cria uma instância do viewmodel
+            SellerFormViewModel viewModel = new SellerFormViewModel();
+            viewModel.Departments = departments;
+            viewModel.Seller = seller;
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Seller seller)
+        {
+            if (seller == null)
+            {
+                return NotFound();
+            }
+
+            //_context.Seller.Update(seller);
+            //Podemos chamar o update sem informar a tabela
+            _context.Update(seller);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            //Busca no banco de dados o vendedor com o id informado
+            Seller seller = _context.Seller.Include("Department").FirstOrDefault(s => s.Id == id);
+
+            if (seller == null)
+            {
+                return NotFound();
+            }
+
+            return View(seller);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            Seller seller = _context.Seller.FirstOrDefault(s => s.Id == id);
+
+            if (seller == null)
+            {
+                return NotFound();
+            }
+
+            _context.Remove(seller);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
     }
 }

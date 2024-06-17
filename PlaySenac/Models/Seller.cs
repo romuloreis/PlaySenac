@@ -1,12 +1,25 @@
-﻿namespace PlaySenac.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
+
+namespace PlaySenac.Models
 {
     public class Seller
     {
         public int Id { get; set; }
+        [Display(Name="Full Name")]
+        [Required]
+        [MinLength(2), MaxLength(30)]
         public string Name { get; set; }
+        [EmailAddress]
+        [MinLength(6, ErrorMessage="Insira um e-mail com mais caracteres")]
+        [MaxLength(20, ErrorMessage="E-mail muito longo")]
         public string Email { get; set; }
+        [Display(Name="Birth Date")]
+        [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
+        [DisplayFormat(DataFormatString ="{0:#,##0.00}")]
         public double Salary { get; set; }
+        [Display(Name="Department Name")]
         public int DepartmentId { get; set; }
         public Department Department { get; set; }
 

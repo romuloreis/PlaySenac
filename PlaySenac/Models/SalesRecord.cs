@@ -1,6 +1,4 @@
-﻿using PlaySenac.Models.Enums;
-
-namespace PlaySenac.Models
+﻿namespace PlaySenac.Models
 {
     public class SalesRecord
     {
@@ -10,5 +8,11 @@ namespace PlaySenac.Models
         public SaleStatus Status { get; set; }
         public int SellerId { get; set; }
         public Seller Seller { get; set; }
+    }
+    public enum SaleStatus : int
+    {
+        PENDING = 0,
+        BILLED = 1,
+        CANCELED = 2
     }
 }
