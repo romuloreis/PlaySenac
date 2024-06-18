@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace PlaySenac.Models
@@ -25,5 +26,12 @@ namespace PlaySenac.Models
 
         public List<SalesRecord> Sales { get; set; } 
             = new List<SalesRecord>();
+
+        public double TotalSales(DateTime initial, 
+            DateTime final) {
+            return Sales.Where(sr => sr.Date >= initial
+            && sr.Date <= final).Sum(sr => sr.Amount);
+        }
+
     }
 }

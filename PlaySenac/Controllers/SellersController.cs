@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using PlaySenac.Data;
 using PlaySenac.Models;
 using PlaySenac.Models.ViewModels;
+using System.Linq;
 
 namespace PlaySenac.Controllers
 {
@@ -17,8 +18,18 @@ namespace PlaySenac.Controllers
         }
 
         public IActionResult Index() { 
-            var sellers = _context.Seller.Include("Department").ToList();
-            return View(sellers);
+            var sellers = 
+                _context.Seller.Include("Department").ToList();
+
+            //Filtra os vendedores com salário menor que 10k
+            var trainee = sellers.Where(s => s.Salary<10000);
+
+            //Lista ordenada pelo nome e depois pelo salário
+            var sellersAscNomeSalary =
+                sellers.OrderBy(s => s.Name).
+                ThenBy(s => s.Salary);
+
+            return View(sellersAscNomeSalary);
         }
 
         public IActionResult Create() { 
@@ -128,5 +139,27 @@ namespace PlaySenac.Controllers
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
+
+        public IActionResult Report() { 
+            var sellers = _context.Seller.Include("Department").ToList();
+            //Soma o salário de todos os vendedores
+            ViewData["TotalFolhaPagamento"] = sellers.Sum(s => s.Salary);
+
+            //Maior Salário da empresa
+            ViewData["Maior"] = sellers.Max(s => s.Salary);
+
+            //Menor Salário da empresa
+            ViewData["Menor"] = sellers.Min(s => s.Salary);
+
+            //Média salarial dos vendedores
+            ViewData["Media"] = sellers.Average(s => s.Salary);
+
+            //Conta quantos vendedores recebem mais que 10000
+            ViewData["Ricos"] = 
+                sellers.Count(s => s.Salary >= 10000);
+
+            return View();
+        }
+
     }
 }
